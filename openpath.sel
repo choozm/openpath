@@ -1,0 +1,12 @@
+# set the environment variable
+set core.download.directory /opt/tmp/something
+set core.chrome.driver /usr/local/bin/chromedriver
+set core.chrome.browser /usr/bin/google-chrome
+
+set openpath.users /opt/tmp/openpath_accounts.csv
+
+set core.duration.timeout 30 seconds
+set core.duration.poll 500 milliseconds
+
+open https://openpaths.cc
+
