@@ -1,10 +1,13 @@
 package openpath;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
-import org.openqa.selenium.By;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,7 +16,8 @@ import org.openqa.selenium.support.ui.Wait;
 
 public class OpenPathDriver {
 
-	//private static Logger logger = Logger.getLogger(OpenPathDriver.class.getName());
+    // private static Logger logger =
+    // Logger.getLogger(OpenPathDriver.class.getName());
 
 	public static int TIMEOUT = 15;
 
@@ -32,24 +36,22 @@ public class OpenPathDriver {
 
 		action.perform(username + ": start");
 
-		Wait<WebDriver> wait = new FluentWait<>(driver)
-				.withTimeout(TIMEOUT, TimeUnit.SECONDS)
-				.pollingEvery(500, TimeUnit.MILLISECONDS)
-				.ignoring(NoSuchElementException.class);
+        Wait<WebDriver> wait = new FluentWait<>(driver).withTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .pollingEvery(500, TimeUnit.MILLISECONDS).ignoring(NoSuchElementException.class);
 
 		driver.get("https://openpaths.cc/");
 
-		//Set username
+        // Set username
 		WebElement element = wait.until(driver -> {
 			return (driver.findElement(By.id("username")));
 		});
 		element.sendKeys(username);
 
-		//Set pasword
+        // Set pasword
 		element = driver.findElement(By.id("password"));
 		element.sendKeys(password);
 
-		//Login
+        // Login
 		element = driver.findElement(By.id("submit_btn"));
 		element.click();
 
@@ -58,15 +60,26 @@ public class OpenPathDriver {
 				return (d.findElement(By.linkText("CSV")));
 			});
 		} catch (Throwable ex) {
-			//Assume that we have failed to login if there is an exception
+            // Assume that we have failed to login if there is an exception
 			action.perform(username + ": cannot login\n\t" + ex.getMessage());
 			result.setSuccess(false);
 			result.setMsg(ex.getMessage());
 			return (result);
 		}
 
+        // Write the username and csv filename pair before download
+        try {
+            FileWriter fw = new FileWriter(downloadDir.resolve(DownloadTask.USERNAME_FILE).toString(), true);
+            PrintWriter pw = new PrintWriter(fw);
+            pw.println(String.format("%s,%s", getFileName(element.getAttribute("href")), username));
+            pw.flush();
+            pw.close();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-		//Download the file
+        // Download the file
 		element.click();
 
 		Path downloadFile = downloadDir.resolve(getFileName(element.getAttribute("href")));
@@ -74,7 +87,7 @@ public class OpenPathDriver {
 
 		action.perform(username + ": complete");
 
-		//Make sure we're out
+        // Make sure we're out
 		while (true) {
 			element = driver.findElement(By.linkText("Logout"));
 			element.click();
@@ -83,7 +96,9 @@ public class OpenPathDriver {
 				element = wait.until(driver -> {
 					return (driver.findElement(By.id("username")));
 				});
-			} catch (Throwable t) { continue; }
+            } catch (Throwable t) {
+                continue;
+            }
 			break;
 		}
 
