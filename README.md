@@ -1,17 +1,18 @@
 # openpath
-Project is created with NetBeans 8.1 and JavaSE 8
+Project is created with NetBeans 8.1 and JavaSE 8; compatible with Eclipse. 
+Tested with Chrome browser only.
 
-Dependencies:
-	Selenium - http://www.seleniumhq.org/download/
-	Chrome Web Driver - https://sites.google.com/a/chromium.org/chromedriver/
+## Dependencies
+1. Apache Commons CSV - https://archive.apache.org/dist/commons/csv/binaries/
+2. Selenium Standalone Server - http://www.seleniumhq.org/download/
+3. Chrome Web Driver - https://sites.google.com/a/chromium.org/chromedriver/
 
-To build download create a directory call lib under openpath, copy Selenium for Java libs into it. 
-NetBeans will complain about missing libraries from the project. I've not checked the libs into the repo (not sure about the distribution licence). Fixed the missing library references in NetBeans by adding the Selenium JARS to the project.
+## Building the code 
+Create a directory 'lib' under openpath, then copy the JAR files of Selenium Standalone Server and Apache Commons CSV into this directory. 
 
-The openpath application reads a command separated file of username and password; a new line for each pair. A line that start with a # is comment. This line will be skipped. Eg
-
-#username, password
+## Running the code
+The openpath application reads a command separated file of username and password; a new line for each pair. A line that start with a # is comment and will be skipped. Example:
+```
 fred,yabadabadoo
 barney,hiya
-
-Note: tested with Chrome only
+```
